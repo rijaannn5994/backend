@@ -26,7 +26,7 @@ def get_all_suppliers():
 @supplier_bp.route("/suppliers", methods=["POST"])
 @require_admin
 def create_supplier():
-    data = request.form.to_dict()
+    data = request.get_json()
     if suppliers_collection.find_one({"supplier_id": data.get("supplier_id")}):
         return make_response(jsonify({"error": "Supplier ID already exists"}),409)
 

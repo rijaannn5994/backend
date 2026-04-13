@@ -27,8 +27,7 @@ def get_all_inventory():
 @inventory_bp.route("/inventory", methods=["POST"])
 @require_admin
 def create_inventory_item():
-    data = request.form.to_dict()
-    
+    data = request.get_json()    
     # Basic validation
     if inventory_collection.find_one({"item_id": data.get("item_id")}):
         return make_response(jsonify({"error": "Item ID already exists"}),409)
@@ -56,8 +55,9 @@ def get_single_item(item_id):
 @inventory_bp.route("/inventory/<item_id>", methods=["PUT"])
 @require_admin
 def update_inventory_item(item_id):
-
-    data = request.form.to_dict()
+    # THIS IS THE CRITICAL CHANGE
+    data = request.get_json() 
+    
     data["last_updated"] = datetime.utcnow().isoformat()
 
     result = inventory_collection.update_one(
